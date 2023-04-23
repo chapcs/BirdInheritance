@@ -2,6 +2,8 @@
 {
     private static void Main(string[] args)
     {
+        string[] spinner = { "/", "-", "\\", "|" };
+
         while (true)
         {
             Bird bird;
@@ -16,7 +18,14 @@
             Egg[] eggs = bird.LayEggs(numberOfEggs);
             foreach (Egg egg in eggs)
             {
-                Console.WriteLine(egg.Description);
+                int count = 0;
+                while (count < 15)
+                {
+                    Console.Write("\rLaying " + spinner[count % spinner.Length]);
+                    count++;
+                    Thread.Sleep(100);
+                }
+                Console.WriteLine("\r" + egg.Description);
             }
             Console.WriteLine();
         }
