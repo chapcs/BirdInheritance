@@ -16,17 +16,21 @@
             Console.Write("\nHow many eggs should it lay? ");
             if (!int.TryParse(Console.ReadLine(), out int numberOfEggs)) return;
             Egg[] eggs = bird.LayEggs(numberOfEggs);
+            int numBrokenEggs = 0;
+
             foreach (Egg egg in eggs)
             {
+                if (egg is BrokenEgg) numBrokenEggs++;
                 int count = 0;
                 while (count < 15)
                 {
                     Console.Write("\rLaying " + spinner[count % spinner.Length]);
                     count++;
-                    Thread.Sleep(100);
+                    Thread.Sleep(75);
                 }
                 Console.WriteLine("\r" + egg.Description);
             }
+            Console.WriteLine($"{numBrokenEggs} eggs were broken out of {numberOfEggs}");
             Console.WriteLine();
         }
     }
@@ -53,10 +57,7 @@ class Egg
 
 class BrokenEgg : Egg
 {
-    public BrokenEgg(string color) : base(0, $"broken {color}")
-    {
-        Console.WriteLine("A bird has laid a broken egg");
-    }
+    public BrokenEgg(string color) : base(0, $"broken {color}") { }
 }
 
 class Bird
@@ -74,6 +75,7 @@ class Pigeon : Bird
     public override Egg[] LayEggs(int numberOfEggs)
     {
         Egg[] eggs = new Egg[numberOfEggs];
+
         for (int i = 0; i < numberOfEggs; i++)
         {
             if (Bird.Randomizer.Next(4) == 0)
@@ -92,7 +94,10 @@ class Ostrich : Bird
         Egg[] eggs = new Egg[numberOfEggs];
         for (int i = 0; i < numberOfEggs; i++)
         {
-            eggs[i] = new Egg(Bird.Randomizer.NextDouble() + 12, "speckled");
+            if (Bird.Randomizer.Next(3) == 0)
+                eggs[i] = new BrokenEgg("speckled");
+            else
+                eggs[i] = new Egg(Bird.Randomizer.NextDouble() + 12, "speckled");
         }
         return eggs;
     }
